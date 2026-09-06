@@ -17,6 +17,7 @@ jobs:
       - name: Extract Android project
         run: |
           unzip -o NermeenlyBlogApp_Android_Project.zip
+          echo "Project extracted:"
           ls -la NermeenlyBlogApp
 
       - name: Remove problematic adaptive icon
@@ -45,9 +46,28 @@ jobs:
       - name: Build APK
         working-directory: NermeenlyBlogApp
         run: |
-          gradle assembleDebug --no-daemon --stacktrace
+          set +e
+          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee build.log
+          BUILD_STATUS=${PIPESTATUS[0]}
+
+          echo ""
+          echo "========================================"
+          echo "        BUILD ERROR SUMMARY"
+          echo "========================================"
+
+          grep -Ei \
+            "FAILURE:|error:|Execution failed|Could not|AAPT|resource .* not found|duplicate|Manifest merger failed|java.lang" \
+            build.log | tail -100 || true
+
+          echo ""
+          echo "========================================"
+          echo "        END ERROR SUMMARY"
+          echo "========================================"
+
+          exit $BUILD_STATUS
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: Nermeenly-debug-apk
