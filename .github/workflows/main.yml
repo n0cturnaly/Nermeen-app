@@ -16,13 +16,9 @@ jobs:
 
       - name: Extract Android project
         run: |
-          unzip -o NermeenlyBlogApp_Android_Project.zip
+          unzip -o NermeenlyBlogApp_Android_Project_v2.zip
           echo "Project extracted:"
           ls -la NermeenlyBlogApp
-
-      - name: Remove problematic adaptive icon
-        run: |
-          rm -f NermeenlyBlogApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
 
       - name: Fix Kotlin dependency conflict
         working-directory: NermeenlyBlogApp
