@@ -25,6 +25,12 @@ jobs:
           echo "Project extracted:"
           ls -la NermeenlyBlogApp
 
+      - name: Update blog URL
+        working-directory: NermeenlyBlogApp
+        run: |
+          grep -RIl "nermly.blogspot.com" . | xargs -r sed -i 's/nermly\.blogspot\.com/nermverse\.blogspot\.com/g'
+          echo "Blog URL updated to nermverse.blogspot.com"
+
       - name: Fix Kotlin dependency conflict
         working-directory: NermeenlyBlogApp
         run: |
